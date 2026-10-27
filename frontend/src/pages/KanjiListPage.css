@@ -1,0 +1,42 @@
+.kanji-list {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 40px 24px 72px;
+}
+
+.kanji-list__footer {
+  margin-top: 40px;
+  text-align: right;
+}
+
+.kanji-list__back {
+  text-decoration: none;
+}
+
+.kanji-list__header { margin: 0 0 32px; }
+
+.kanji-list__header h1 {
+  margin: 0 0 6px;
+  font-size: clamp(1.6rem, 4vw, 2.1rem);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.kanji-list__header p { margin: 0; color: var(--text-secondary); }
+
+.kanji-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 14px;
+}
+
+.kanji-list__message {
+  color: var(--text-secondary);
+  padding: 32px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.kanji-list__message p { margin: 0 0 16px; }
+.kanji-list__message p:last-child { margin-bottom: 0; }

@@ -1,0 +1,45 @@
+.kanji-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 26px 12px 20px;
+  text-align: center;
+  text-decoration: none;
+  color: var(--text);
+  background: color-mix(in srgb, var(--card-color, var(--accent)) 5%, var(--surface));
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  border-top: 3px solid var(--card-color, var(--accent));
+  box-shadow: var(--shadow-sm);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.kanji-card:hover {
+  border-color: var(--card-color, var(--accent));
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.kanji-card:focus-visible { outline: 2px solid var(--card-color, var(--accent)); outline-offset: 2px; }
+
+.kanji-card__char {
+  font-family: var(--font-display);
+  font-size: 3rem;
+  line-height: 1.1;
+  color: var(--card-color, var(--accent));
+}
+
+.kanji-card__reading {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  min-height: 1.2em;
+}
+
+.kanji-card__meaning { font-weight: 600; font-size: 0.92rem; }
+
+@media (prefers-reduced-motion: reduce) {
+  .kanji-card { transition: none; }
+  .kanji-card:hover { transform: none; }
+}

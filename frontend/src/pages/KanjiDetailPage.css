@@ -1,0 +1,144 @@
+.kanji-detail {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 40px 24px 72px;
+}
+
+.kanji-detail__hero {
+  padding: 20px 24px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--card-color);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
+
+.kanji-detail__summary {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.kanji-detail__title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 32px;
+  min-width: 0;
+}
+
+.kanji-detail__title h1 {
+  margin: 0;
+  font-size: clamp(1.35rem, 3.5vw, 1.7rem);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  text-transform: capitalize;
+  color: var(--card-color);
+}
+
+.kanji-detail__readings {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.kanji-detail__hiragana {
+  padding: 3px 12px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--card-color);
+  background: color-mix(in srgb, var(--card-color) 10%, var(--surface));
+  border: 1px solid color-mix(in srgb, var(--card-color) 25%, var(--surface));
+  border-radius: 999px;
+}
+
+.kanji-detail__label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+}
+
+.kanji-detail__strokes {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.kanji-detail__label { margin: 0 0 10px; }
+
+.kanji-detail__meanings {
+  display: grid;
+  gap: 12px;
+  margin: 24px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.meaning {
+  padding: 18px 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
+
+.meaning__label {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+}
+
+.meaning__word { font-size: 1.05rem; font-weight: 700; color: var(--card-color); }
+
+.meaning__label .kanji-detail__hiragana { padding: 1px 10px; font-size: 0.95rem; }
+
+.reading__word-info { color: var(--text-secondary); font-size: 0.9rem; }
+
+.meaning__example { margin-top: 10px; }
+
+.meaning__example p { margin: 0; }
+
+.meaning__sentence { font-size: 1.2rem; }
+
+.meaning__example .meaning__reading {
+  margin-top: 4px;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.meaning__example .meaning__translation { margin-top: 6px; }
+
+.kanji-detail__mark {
+  color: var(--card-color);
+  font-weight: 700;
+  background: none;
+}
+
+.kanji-detail__message {
+  color: var(--text-secondary);
+  padding: 32px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.kanji-detail__message p { margin: 0 0 16px; }
+.kanji-detail__message p:last-child { margin-bottom: 0; }
+
+.kanji-detail__footer {
+  margin-top: 40px;
+  text-align: right;
+}
+
+.kanji-detail__back { text-decoration: none; }
+
+@media (max-width: 520px) {
+  .kanji-detail__hero { padding: 16px; }
+  .kanji-detail__summary { gap: 14px; }
+}
