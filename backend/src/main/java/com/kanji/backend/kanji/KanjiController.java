@@ -34,6 +34,8 @@ public class KanjiController {
         Kanji kanji = kanjiRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Kanji not found"));
         return KanjiDetail.of(kanji, kanjiMeaningRepository.findByKanjiIdOrderBySortOrderAsc(id),
-                kanjiReadingRepository.findByKanjiIdOrderBySortOrderAsc(id));
+                kanjiReadingRepository.findByKanjiIdOrderBySortOrderAsc(id),
+                kanjiRepository.findFirstByDisplayOrderLessThanOrderByDisplayOrderDesc(kanji.getDisplayOrder()).orElse(null),
+                kanjiRepository.findFirstByDisplayOrderGreaterThanOrderByDisplayOrderAsc(kanji.getDisplayOrder()).orElse(null));
     }
 }

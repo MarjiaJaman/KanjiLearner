@@ -1,12 +1,12 @@
 # Kanji Learner
 
-A web app for learning JLPT N5 kanji. Each kanji has a card in a list. Clicking a card opens a detail page with:
+A web app for learning JLPT N5 kanji. The home page lists the kanji as cards, 18 per page, and the search bar in the header filters them by kanji, English meaning or reading. Clicking a card opens a detail page with:
 
 - an animated stroke-order diagram and a step-by-step breakdown of each stroke
 - the English meanings, each with an example sentence
 - every reading in hiragana, each with an example word and sentence
 
-The app has 112 N5 kanji, starting with 日月火水木金土. The other JLPT levels (N4–N1) appear on the home page but are not open yet.
+The app has 112 N5 kanji, starting with 日月火水木金土. The app header has a switcher for the JLPT levels. Only N5 is open; N4–N1 are greyed out until they are added.
 
 ## Tech stack
 
@@ -60,7 +60,7 @@ frontend/
     api/kanjiApi.js              API client (can use sample data offline)
     components/                  Layout, KanjiCard, StrokeOrder
     data/                        Levels, color palette, strokes.json
-    pages/                       Home, kanji list, kanji detail
+    pages/                       Kanji list (home) and kanji detail
     utils/readings.js            Katakana → hiragana and reading order
 docker-compose.yml
 ```
@@ -70,13 +70,13 @@ docker-compose.yml
 | Method | Path              | Returns                                                     |
 | ------ | ----------------- | ----------------------------------------------------------- |
 | GET    | `/api/kanji`      | All kanji, ordered by `displayOrder`                        |
-| GET    | `/api/kanji/{id}` | One kanji with its `meanings` and `readings`, or 404        |
+| GET    | `/api/kanji/{id}` | One kanji with its `meanings`, `readings`, and the `previous` and `next` kanji, or 404 |
 
 ## Data
 
 The database tables are created by Hibernate (`ddl-auto=update`). `data.sql` runs on every backend start and upserts three tables:
 
-- **`kanji`**: the character, on'yomi, kun'yomi, English meaning, stroke count, `display_order`, and an optional `main_reading`
+- **`kanji`**: the character, katakana reading (`onyomi`), hiragana reading (`kunyomi`), English meaning, stroke count, `display_order`, and an optional `main_reading`
 - **`kanji_meaning`**: one row per meaning, with an example sentence, its reading and its translation
 - **`kanji_reading`**: one row per reading, with an example word and sentence
 
@@ -85,13 +85,13 @@ Because the seed only inserts or updates rows, you can re-run it safely. Deletin
 ### Adding a kanji
 
 1. Add a row to the `kanji` insert in `data.sql` with the next `display_order`.
-2. Add its meaning rows and reading rows. The reading rows must follow the same order as the reading pills: `main_reading` first, then kun'yomi, then on'yomi, with duplicates removed.
+2. Add its meaning rows and reading rows. The reading rows must follow the same order as the reading pills: `main_reading` first, then the hiragana readings, then the katakana readings, with duplicates removed.
 3. Add its stroke paths to `frontend/src/data/strokes.json`, taken from the KanjiVG SVG for that character.
 4. Rebuild the backend.
 
 ### Card reading
 
-The list card shows `main_reading` if it is set. Otherwise it shows the kun'yomi, or the first on'yomi in hiragana. Set `main_reading` when the card should show a different reading, for example いち for 一 or かい for 会.
+The list card shows `main_reading` if it is set. Otherwise it shows the hiragana reading, or the first katakana reading converted to hiragana. Set `main_reading` when the card should show a different reading, for example いち for 一 or かい for 会.
 
 ## Frontend scripts
 
