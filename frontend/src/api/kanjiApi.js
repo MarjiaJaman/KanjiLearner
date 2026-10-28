@@ -23,7 +23,8 @@ export async function getKanjiList() {
 
 // Expected JSON: { id, kanjiCharacter, onyomi, kunyomi, englishMeaning, strokeCount, displayOrder,
 //   meanings: [{ id, meaning, sentence, sentenceReading, sentenceTranslation }],
-//   readings: [{ id, reading, word, wordReading, wordMeaning, sentence, sentenceReading, sentenceTranslation }] }
+//   readings: [{ id, reading, word, wordReading, wordMeaning, sentence, sentenceReading, sentenceTranslation }],
+//   previous: { id, kanjiCharacter } | null, next: { id, kanjiCharacter } | null }
 export async function getKanjiDetail(id) {
   if (USE_SAMPLE_DATA) {
     const kanji = SAMPLE.find((k) => String(k.id) === String(id));

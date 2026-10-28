@@ -1,7 +1,7 @@
 .kanji-detail {
   max-width: 760px;
   margin: 0 auto;
-  padding: 40px 24px 72px;
+  padding: 24px 24px 72px;
 }
 
 .kanji-detail__hero {
@@ -131,12 +131,68 @@
 .kanji-detail__message p { margin: 0 0 16px; }
 .kanji-detail__message p:last-child { margin-bottom: 0; }
 
-.kanji-detail__footer {
-  margin-top: 40px;
-  text-align: right;
+.kanji-detail__nav {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 16px;
 }
 
-.kanji-detail__back { text-decoration: none; }
+.kanji-detail__nav .kanji-detail__back {
+  padding: 7px 14px;
+  color: var(--text-on-accent);
+  text-decoration: none;
+  background: var(--card-color);
+  border-color: var(--card-color);
+}
+
+.kanji-detail__nav .kanji-detail__back:hover {
+  background: color-mix(in srgb, var(--card-color) 85%, black);
+  border-color: color-mix(in srgb, var(--card-color) 85%, black);
+}
+
+.kanji-detail__nav .kanji-detail__back:focus-visible { outline-color: var(--card-color); }
+
+/* Previous / next arrows sit on either side of the content column, centred in the window. */
+.kanji-detail__step {
+  position: fixed;
+  top: 50%;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  color: var(--card-color);
+  background: color-mix(in srgb, var(--card-color) 8%, var(--surface));
+  border: 1px solid color-mix(in srgb, var(--card-color) 30%, var(--surface));
+  border-radius: 999px;
+  box-shadow: var(--shadow-md);
+  transform: translateY(-50%);
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.kanji-detail__step--previous { left: max(12px, calc(50% - 380px - 72px)); }
+.kanji-detail__step--next { right: max(12px, calc(50% - 380px - 72px)); }
+
+.kanji-detail__step svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.kanji-detail__step:hover { color: var(--text-on-accent); background: var(--card-color); border-color: var(--card-color); }
+.kanji-detail__step:focus-visible { outline: 2px solid var(--card-color); outline-offset: 2px; }
+
+/* Without room beside the column, the arrows move to the bottom corners. */
+@media (max-width: 900px) {
+  .kanji-detail__step { top: auto; bottom: 16px; transform: none; }
+  .kanji-detail__step--previous { left: 16px; }
+  .kanji-detail__step--next { right: 16px; }
+}
 
 @media (max-width: 520px) {
   .kanji-detail__hero { padding: 16px; }

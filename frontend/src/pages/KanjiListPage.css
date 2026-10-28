@@ -4,15 +4,6 @@
   padding: 40px 24px 72px;
 }
 
-.kanji-list__footer {
-  margin-top: 40px;
-  text-align: right;
-}
-
-.kanji-list__back {
-  text-decoration: none;
-}
-
 .kanji-list__header { margin: 0 0 32px; }
 
 .kanji-list__header h1 {

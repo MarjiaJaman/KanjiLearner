@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { getKanjiDetail } from '../api/kanjiApi';
 import { PALETTE } from '../data/palette';
 import { readings } from '../utils/readings';
 import { StrokeAnimation, StrokeSteps } from '../components/StrokeOrder';
 import './KanjiDetailPage.css';
+
+// Must match PAGE_SIZE in KanjiListPage, so "All kanji" returns to the page this kanji is on.
+const LIST_PAGE_SIZE = 18;
 
 // Wraps each occurrence of the kanji in the sentence so it stands out.
 function highlight(sentence, kanjiCharacter) {
@@ -24,6 +27,19 @@ function Example({ item, kanjiCharacter }) {
   );
 }
 
+function NeighborLink({ kanji, direction }) {
+  if (!kanji) return null;
+  const label = direction === 'previous' ? 'Previous kanji' : 'Next kanji';
+  return (
+    <Link to={`/kanji/${kanji.id}`} className={`kanji-detail__step kanji-detail__step--${direction}`}
+      aria-label={`${label}: ${kanji.kanjiCharacter}`} title={label}>
+      <svg viewBox="0 0 20 20" aria-hidden="true">
+        <path d={direction === 'previous' ? 'M12.5 4.5 7 10l5.5 5.5' : 'M7.5 4.5 13 10l-5.5 5.5'} />
+      </svg>
+    </Link>
+  );
+}
+
 export default function KanjiDetailPage() {
   const { id } = useParams();
   const [kanji, setKanji] = useState(null);
@@ -38,11 +54,34 @@ export default function KanjiDetailPage() {
 
   useEffect(load, [id]);
 
+  const navigate = useNavigate();
+  const previous = status === 'ready' ? kanji.previous : null;
+  const next = status === 'ready' ? kanji.next : null;
+
+  // ← and → move between kanji, unless the user is typing in the search bar.
+  useEffect(() => {
+    const onKeyDown = (e) => {
+      if (e.target.closest('input, textarea') || e.altKey || e.metaKey || e.ctrlKey) return;
+      const target = e.key === 'ArrowLeft' ? previous : e.key === 'ArrowRight' ? next : null;
+      if (target) navigate(`/kanji/${target.id}`);
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [previous, next, navigate]);
+
+  const listPage = kanji ? Math.ceil(kanji.displayOrder / LIST_PAGE_SIZE) : 1;
+
   // Matches the color the card had in the list, which is ordered by displayOrder.
   const color = kanji ? PALETTE[(kanji.displayOrder - 1) % PALETTE.length] : PALETTE[0];
 
   return (
     <main className="kanji-detail" style={{ '--card-color': color }}>
+      <nav className="kanji-detail__nav" aria-label="Kanji navigation">
+        <Link to={listPage > 1 ? `/?page=${listPage}` : '/'} className="btn kanji-detail__back">Back to kanji</Link>
+        <NeighborLink kanji={previous} direction="previous" />
+        <NeighborLink kanji={next} direction="next" />
+      </nav>
+
       {status === 'loading' && <p className="kanji-detail__message">Loading kanji…</p>}
 
       {status === 'error' && (
@@ -98,10 +137,6 @@ export default function KanjiDetailPage() {
           )}
         </>
       )}
-
-      <div className="kanji-detail__footer">
-        <Link to="/kanji" className="btn btn--primary kanji-detail__back">Back to kanji</Link>
-      </div>
     </main>
   );
 }
