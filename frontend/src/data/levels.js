@@ -1,6 +1,6 @@
 import { PALETTE } from './palette';
 
-// Only N5 is enabled for now. Set enabled: true to open another level later.
+// Shown in the app header. Only N5 is enabled for now; set enabled: true to open another level later.
 export const LEVELS = [
   { id: "n1", label: "N1", numeral: "一", enabled: false, color: PALETTE[4] },
   { id: "n2", label: "N2", numeral: "二", enabled: false, color: PALETTE[3] },
