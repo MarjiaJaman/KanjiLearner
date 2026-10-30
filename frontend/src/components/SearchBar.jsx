@@ -22,8 +22,8 @@ export default function SearchBar() {
       <input
         type="search"
         className="search-bar__input"
-        placeholder="Search kanji, meaning or reading"
-        aria-label="Search kanji"
+        placeholder="Search kanji, hiragana or katakana"
+        aria-label="Search kanji and kana"
         value={query}
         onChange={(e) => search(e.target.value)}
         onKeyDown={(e) => { if (e.key === 'Escape') search(''); }}

@@ -1,10 +1,14 @@
 # Kanji Learner
 
-A web app for learning JLPT N5 kanji. The home page lists the kanji as cards, 18 per page, and the search bar in the header filters them by kanji, English meaning or reading. Clicking a card opens a detail page with:
+A web app for learning JLPT N5 kanji. The home page lists the kanji as cards, 18 per page, and the search bar in the header finds kanji, hiragana and katakana by the characters you type. Clicking a card opens a detail page with:
 
 - an animated stroke-order diagram and a step-by-step breakdown of each stroke
 - the English meanings, each with an example sentence
 - every reading in hiragana, each with an example word and sentence
+
+A sidebar switches between Kanji, Hiragana and Katakana. The two kana pages show the full chart with romaji: the basic sounds, dakuten and handakuten (が, ぱ), and combinations (きゃ). Clicking a kana opens its stroke order.
+
+All content comes from the backend: the kanji (one page at a time), the kana chart and the stroke drawings. If a request takes longer than 200 ms, the page shows a loader while it waits.
 
 The app has 112 N5 kanji, starting with 日月火水木金土. The app header has a switcher for the JLPT levels. Only N5 is open; N4–N1 are greyed out until they are added.
 
@@ -51,16 +55,21 @@ The frontend folder is mounted into its container, so edits to `frontend/src` re
 backend/
   src/main/java/com/kanji/backend/
     config/WebConfig.java        CORS for the frontend origins
-    kanji/                       Entities, repositories, controller
+    kanji/                       Kanji entities, repositories, controller
+    kana/                        Kana chart entity, repository, controller
+    stroke/                      Stroke entity, repository, controller
   src/main/resources/
     application.properties
     data.sql                     Seed data for all kanji, meanings and readings
+    kana.sql                     Seed data for the hiragana/katakana chart
+    strokes.sql                  Stroke paths for every kanji and kana (from KanjiVG)
 frontend/
   src/
-    api/kanjiApi.js              API client (can use sample data offline)
-    components/                  Layout, KanjiCard, StrokeOrder
-    data/                        Levels, color palette, strokes.json
-    pages/                       Kanji list (home) and kanji detail
+    api/                         API clients for kanji, kana and strokes
+    hooks/useApi.js              Loading / ready / error state for each request
+    components/                  Layout, Sidebar, SearchBar, Pagination, Loader, KanjiCard, KanaCard, StrokeOrder
+    data/                        Levels, color palette, kana chart section titles
+    pages/                       Kanji list (home), kanji detail, hiragana/katakana chart
     utils/readings.js            Katakana → hiragana and reading order
 docker-compose.yml
 ```
@@ -69,16 +78,24 @@ docker-compose.yml
 
 | Method | Path              | Returns                                                     |
 | ------ | ----------------- | ----------------------------------------------------------- |
-| GET    | `/api/kanji`      | All kanji, ordered by `displayOrder`                        |
-| GET    | `/api/kanji/{id}` | One kanji with its `meanings`, `readings`, and the `previous` and `next` kanji, or 404 |
+| GET    | `/api/kanji?page=1&size=18` | One page of kanji in `displayOrder`: `{ items, page, size, totalItems, totalPages }`. Add `characters=日月` to get only those kanji (used by search) |
+| GET    | `/api/kanji/{id}` | One kanji with its `meanings`, `readings`, `strokes`, and the `previous` and `next` kanji, or 404 |
+| GET    | `/api/kana`       | The kana chart: section, row, column, hiragana, katakana, romaji |
+| GET    | `/api/strokes?characters=きゃ` | Stroke paths for each character, e.g. `{ "き": [...], "ゃ": [...] }` |
 
 ## Data
 
-The database tables are created by Hibernate (`ddl-auto=update`). `data.sql` runs on every backend start and upserts three tables:
+See [DATABASE.md](DATABASE.md) for the full schema, seeding and common database tasks.
+
+The database tables are created by Hibernate (`ddl-auto=update`). `data.sql`, `kana.sql` and `strokes.sql` run on every backend start and upsert these tables:
 
 - **`kanji`**: the character, katakana reading (`onyomi`), hiragana reading (`kunyomi`), English meaning, stroke count, `display_order`, and an optional `main_reading`
 - **`kanji_meaning`**: one row per meaning, with an example sentence, its reading and its translation
 - **`kanji_reading`**: one row per reading, with an example word and sentence
+- **`kana`**: one row per kana in the chart, with its hiragana, katakana and romaji
+- **`stroke`**: one row per stroke of a kanji or kana, as an SVG path
+
+The `kana` and `stroke` character columns use the `utf8mb4_bin` collation. MySQL's default collation treats か, カ and が as the same character.
 
 Because the seed only inserts or updates rows, you can re-run it safely. Deleting a kanji from `data.sql` does not remove it from the database; delete the row in MySQL as well.
 
@@ -86,7 +103,7 @@ Because the seed only inserts or updates rows, you can re-run it safely. Deletin
 
 1. Add a row to the `kanji` insert in `data.sql` with the next `display_order`.
 2. Add its meaning rows and reading rows. The reading rows must follow the same order as the reading pills: `main_reading` first, then the hiragana readings, then the katakana readings, with duplicates removed.
-3. Add its stroke paths to `frontend/src/data/strokes.json`, taken from the KanjiVG SVG for that character.
+3. Add its stroke paths to `strokes.sql`, taken from the KanjiVG SVG for that character.
 4. Rebuild the backend.
 
 ### Card reading
