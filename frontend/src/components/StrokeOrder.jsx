@@ -1,8 +1,7 @@
 import { useState } from 'react';
-import STROKES from '../data/strokes.json';
 import './StrokeOrder.css';
 
-// Stroke paths come from KanjiVG (https://kanjivg.tagaini.net), CC BY-SA 3.0, drawn on a 109×109 grid.
+// Stroke paths come from the backend (/api/kanji/{id} and /api/strokes), originally from KanjiVG (https://kanjivg.tagaini.net), CC BY-SA 3.0, drawn on a 109×109 grid.
 const VIEW_BOX = '0 0 109 109';
 const STROKE_SECONDS = 0.6;
 
@@ -21,19 +20,18 @@ function Grid() {
   );
 }
 
-// The kanji drawing itself stroke by stroke, with a small replay control in the corner.
-export function StrokeAnimation({ kanjiCharacter }) {
-  const strokes = STROKES[kanjiCharacter];
+// The character drawing itself stroke by stroke, with a small replay control in the corner.
+export function StrokeAnimation({ character, strokes }) {
   const [playCount, setPlayCount] = useState(0);
 
-  if (!strokes) {
-    return <div className="stroke-animation stroke-animation--text" lang="ja">{kanjiCharacter}</div>;
+  if (!strokes?.length) {
+    return <div className="stroke-animation stroke-animation--text" lang="ja">{character}</div>;
   }
 
   return (
     <div className="stroke-animation">
       {/* Changing the key remounts the SVG, which restarts the CSS animation. */}
-      <svg key={playCount} viewBox={VIEW_BOX} role="img" aria-label={`How to write ${kanjiCharacter}`}>
+      <svg key={playCount} viewBox={VIEW_BOX} role="img" aria-label={`How to write ${character}`}>
         <Grid />
         {strokes.map((d, i) => <path key={`ghost-${i}`} d={d} className="stroke-animation__ghost" />)}
         {strokes.map((d, i) => (
@@ -53,13 +51,11 @@ export function StrokeAnimation({ kanjiCharacter }) {
 }
 
 // One small frame per stroke: earlier strokes in ink, the new stroke in color, a dot where the pen starts.
-export function StrokeSteps({ kanjiCharacter }) {
-  const strokes = STROKES[kanjiCharacter];
-
-  if (!strokes) return <p className="stroke-steps__missing">Stroke order is not available for this kanji yet.</p>;
+export function StrokeSteps({ character, strokes }) {
+  if (!strokes?.length) return <p className="stroke-steps__missing">Stroke order is not available for this character yet.</p>;
 
   return (
-    <ol className="stroke-steps" aria-label={`Stroke order of ${kanjiCharacter}, step by step`}>
+    <ol className="stroke-steps" aria-label={`Stroke order of ${character}, step by step`}>
       {strokes.map((d, step) => {
         const start = startPoint(d);
         return (

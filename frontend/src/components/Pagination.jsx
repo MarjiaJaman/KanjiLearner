@@ -1,8 +1,13 @@
 import './Pagination.css';
 
+// At most this many page numbers are shown, with the current page in the middle when possible.
+const VISIBLE_PAGES = 3;
+
 export default function Pagination({ page, pageCount, onChange }) {
   if (pageCount <= 1) return null;
-  const pages = Array.from({ length: pageCount }, (_, i) => i + 1);
+  const count = Math.min(VISIBLE_PAGES, pageCount);
+  const first = Math.min(Math.max(1, page - Math.floor(count / 2)), pageCount - count + 1);
+  const pages = Array.from({ length: count }, (_, i) => first + i);
 
   return (
     <nav className="pagination" aria-label="Pages">

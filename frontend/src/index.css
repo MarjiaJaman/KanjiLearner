@@ -27,6 +27,14 @@
   --shadow-md: 0 8px 20px rgba(17, 24, 39, 0.08);
 
   --font-display: 'Shippori Mincho', 'Yu Mincho', serif;
+
+  /* App frame */
+  --header-height: 64px;
+  --sidebar-width: 200px;
+}
+
+@media (max-width: 900px) {
+  :root { --sidebar-width: 0px; }
 }
 
 *, *::before, *::after { box-sizing: border-box; }

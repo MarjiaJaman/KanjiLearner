@@ -15,6 +15,20 @@
 
 .kanji-list__header p { margin: 0; color: var(--text-secondary); }
 
+.kanji-list__section { margin-bottom: 36px; }
+
+.kanji-list__section-title {
+  margin: 0 0 14px;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.kana-results {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(88px, 1fr));
+  gap: 10px;
+}
+
 .kanji-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));

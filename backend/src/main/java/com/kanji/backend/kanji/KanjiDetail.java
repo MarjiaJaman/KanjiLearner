@@ -14,6 +14,7 @@ public record KanjiDetail(
         String mainReading,
         List<KanjiMeaning> meanings,
         List<KanjiReading> readings,
+        List<String> strokes,
         Neighbor previous,
         Neighbor next) {
 
@@ -26,9 +27,9 @@ public record KanjiDetail(
     }
 
     static KanjiDetail of(Kanji kanji, List<KanjiMeaning> meanings, List<KanjiReading> readings,
-            Kanji previous, Kanji next) {
+            List<String> strokes, Kanji previous, Kanji next) {
         return new KanjiDetail(kanji.getId(), kanji.getKanjiCharacter(), kanji.getOnyomi(), kanji.getKunyomi(),
                 kanji.getEnglishMeaning(), kanji.getJlptLevel(), kanji.getStrokeCount(), kanji.getDisplayOrder(), kanji.getMainReading(),
-                meanings, readings, Neighbor.of(previous), Neighbor.of(next));
+                meanings, readings, strokes, Neighbor.of(previous), Neighbor.of(next));
     }
 }

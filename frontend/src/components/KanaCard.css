@@ -1,0 +1,50 @@
+.kana-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 14px 6px 12px;
+  background: color-mix(in srgb, var(--card-color) 6%, var(--surface));
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--card-color);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  font: inherit;
+  cursor: pointer;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+button.kana-card:hover {
+  border-color: var(--card-color);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+button.kana-card:focus-visible { outline: 2px solid var(--card-color); outline-offset: 2px; }
+
+.kana-card--empty {
+  cursor: default;
+  background: none;
+  border: 1px dashed var(--border);
+  box-shadow: none;
+}
+
+.kana-card__char {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  line-height: 1.2;
+  letter-spacing: -0.08em;
+  color: var(--card-color);
+}
+
+.kana-card__romaji {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+@media (max-width: 520px) {
+  .kana-card { padding: 10px 2px 8px; }
+  .kana-card__char { font-size: 1.5rem; }
+  .kana-card--empty { border-color: transparent; }
+}
