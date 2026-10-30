@@ -3,6 +3,10 @@ export function toHiragana(text) {
   return text.replace(/[ァ-ヶ]/g, (ch) => String.fromCharCode(ch.charCodeAt(0) - 0x60));
 }
 
+export function toKatakana(text) {
+  return text.replace(/[ぁ-ゖ]/g, (ch) => String.fromCharCode(ch.charCodeAt(0) + 0x60));
+}
+
 // Every reading of the kanji in hiragana: the main reading, then the hiragana readings, then the katakana ones, without duplicates.
 export function readings(kanji) {
   const all = [kanji.mainReading, kanji.kunyomi, kanji.onyomi]

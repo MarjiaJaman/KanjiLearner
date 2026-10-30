@@ -1,8 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { getKanjiDetail } from '../api/kanjiApi';
 import { PALETTE } from '../data/palette';
 import { readings } from '../utils/readings';
+import { useApi } from '../hooks/useApi';
+import Loader from '../components/Loader';
 import { StrokeAnimation, StrokeSteps } from '../components/StrokeOrder';
 import './KanjiDetailPage.css';
 
@@ -42,17 +44,7 @@ function NeighborLink({ kanji, direction }) {
 
 export default function KanjiDetailPage() {
   const { id } = useParams();
-  const [kanji, setKanji] = useState(null);
-  const [status, setStatus] = useState('loading'); // loading | ready | error
-
-  const load = () => {
-    setStatus('loading');
-    getKanjiDetail(id)
-      .then((data) => { setKanji(data); setStatus('ready'); })
-      .catch(() => setStatus('error'));
-  };
-
-  useEffect(load, [id]);
+  const { status, data: kanji, retry } = useApi(getKanjiDetail, id);
 
   const navigate = useNavigate();
   const previous = status === 'ready' ? kanji.previous : null;
@@ -82,12 +74,12 @@ export default function KanjiDetailPage() {
         <NeighborLink kanji={next} direction="next" />
       </nav>
 
-      {status === 'loading' && <p className="kanji-detail__message">Loading kanji…</p>}
+      {status === 'loading' && <Loader label="Loading kanji…" />}
 
       {status === 'error' && (
         <div className="kanji-detail__message" role="alert">
           <p>Could not load this kanji. Check that the backend is running at localhost:8080.</p>
-          <button type="button" className="btn btn--primary" onClick={load}>Try again</button>
+          <button type="button" className="btn btn--primary" onClick={retry}>Try again</button>
         </div>
       )}
 
@@ -95,7 +87,7 @@ export default function KanjiDetailPage() {
         <>
           <section className="kanji-detail__hero">
             <div className="kanji-detail__summary">
-              <StrokeAnimation kanjiCharacter={kanji.kanjiCharacter} />
+              <StrokeAnimation character={kanji.kanjiCharacter} strokes={kanji.strokes} />
               <div className="kanji-detail__title">
                 <h1>{kanji.englishMeaning}</h1>
                 <ul className="kanji-detail__readings" aria-label="Readings in hiragana">
@@ -106,7 +98,7 @@ export default function KanjiDetailPage() {
 
             <div className="kanji-detail__strokes">
               <h2 className="kanji-detail__label">Stroke order</h2>
-              <StrokeSteps kanjiCharacter={kanji.kanjiCharacter} />
+              <StrokeSteps character={kanji.kanjiCharacter} strokes={kanji.strokes} />
             </div>
           </section>
 

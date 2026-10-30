@@ -1,10 +1,15 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import Logo from './Logo';
 import SearchBar from './SearchBar';
+import Sidebar from './Sidebar';
 import { LEVELS } from '../data/levels';
 import './Layout.css';
 
 export default function Layout({ children }) {
+  const { pathname } = useLocation();
+  // The JLPT levels only apply to kanji, so the kana pages leave them out.
+  const onKanjiPage = pathname === '/' || pathname.startsWith('/kanji');
+
   return (
     <div className="app-shell">
       <header className="app-header">
@@ -16,7 +21,7 @@ export default function Layout({ children }) {
 
           <SearchBar />
 
-          <nav className="levels-nav" aria-label="JLPT levels">
+          {onKanjiPage && <nav className="levels-nav" aria-label="JLPT levels">
             {LEVELS.map(({ id, label, enabled, color }) => (
               enabled ? (
                 <Link key={id} to="/" className="levels-nav__item levels-nav__item--active" style={{ '--level-color': color }} aria-current="page">
@@ -28,10 +33,13 @@ export default function Layout({ children }) {
                 </span>
               )
             ))}
-          </nav>
+          </nav>}
         </div>
       </header>
-      <div className="app-content">{children}</div>
+      <div className="app-body">
+        <Sidebar />
+        <div className="app-content">{children}</div>
+      </div>
     </div>
   );
 }
